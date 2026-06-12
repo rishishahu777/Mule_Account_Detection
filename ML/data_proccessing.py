@@ -5,18 +5,13 @@ from sklearn.impute import SimpleImputer
 from sklearn.model_selection import train_test_split
 from sklearn.feature_selection import VarianceThreshold
 
-# =========================
-# Load Dataset
-# =========================
 
 df = pd.read_csv("dataset/DataSet.csv")
 
 # Remove index column
 df.drop(columns=['Unnamed: 0'], inplace=True)
 
-# =========================
 # Remove Empty Columns
-# =========================
 
 df.dropna(axis=1, how='all', inplace=True)
 
@@ -29,9 +24,7 @@ high_missing_cols = missing_percent[
 
 df.drop(columns=high_missing_cols, inplace=True)
 
-# =========================
 # Handle Date Column
-# =========================
 
 df['F3888'] = pd.to_datetime(
     df['F3888'],
@@ -44,9 +37,7 @@ df['F3888_day'] = df['F3888'].dt.day
 
 df.drop(columns=['F3888'], inplace=True)
 
-# =========================
 # Encode Categorical Columns
-# =========================
 
 cat_cols = [
     'F2230',
@@ -64,9 +55,7 @@ for col in cat_cols:
     le = LabelEncoder()
     df[col] = le.fit_transform(df[col])
 
-# =========================
 # Missing Value Imputation
-# =========================
 
 imputer = SimpleImputer(
     strategy='median'
@@ -77,9 +66,7 @@ df = pd.DataFrame(
     columns=df.columns
 )
 
-# =========================
 # Remove Constant Columns
-# =========================
 
 constant_cols = [
     col
@@ -90,9 +77,8 @@ constant_cols = [
 df.drop(columns=constant_cols,
         inplace=True)
 
-# =========================
 # Save Clean Dataset
-# =========================
+
 
 df.to_csv(
     "dataset/midas_cleaned.csv",
@@ -101,16 +87,14 @@ df.to_csv(
 
 print("Cleaned Dataset Shape:", df.shape)
 
-# =========================
+
 # Feature / Target Split
-# =========================
+
 
 X = df.drop('F3924', axis=1)
 y = df['F3924']
 
-# =========================
 # Train Test Split
-# =========================
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -123,9 +107,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 print("Train Shape:", X_train.shape)
 print("Test Shape :", X_test.shape)
 
-# =========================
+
 # Variance Threshold
-# =========================
 
 selector = VarianceThreshold(
     threshold=0.001
