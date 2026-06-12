@@ -16,9 +16,7 @@ from sklearn.linear_model import LogisticRegression
 
 from xgboost import XGBClassifier
 
-# ==================================================
 # CONFIGURATION
-# ==================================================
 
 DATA_PATH = "../dataset/midas_cleaned.csv"
 TOP_K_FEATURES = 300
@@ -26,17 +24,13 @@ RANDOM_STATE = 42
 
 os.makedirs("../trained_models", exist_ok=True)
 
-# ==================================================
 # LOAD DATA
-# ==================================================
 
 print("Loading dataset...")
 
 df = pd.read_csv(DATA_PATH)
 
-# ==================================================
 # REMOVE KNOWN LEAKAGE COLUMNS
-# ==================================================
 
 LEAKAGE_COLUMNS = [
     "F3912",
@@ -62,9 +56,8 @@ df.drop(
     errors="ignore"
 )
 
-# ==================================================
 # CORRELATION CHECK
-# ==================================================
+
 
 print("\nChecking highly correlated features...\n")
 
@@ -98,18 +91,15 @@ print("Features with correlation > 0.50")
 for feature, corr in target_corr:
     print(feature, round(corr, 4))
 
-# ==================================================
+
 # FEATURES / TARGET
-# ==================================================
 
 X = df.drop("F3924", axis=1)
 y = df["F3924"]
 
 print("\nDataset Shape:", df.shape)
 
-# ==================================================
 # TRAIN TEST SPLIT
-# ==================================================
 
 X_train, X_test, y_train, y_test = train_test_split(
     X,
@@ -122,9 +112,8 @@ X_train, X_test, y_train, y_test = train_test_split(
 print("\nTrain Shape:", X_train.shape)
 print("Test Shape :", X_test.shape)
 
-# ==================================================
+
 # VARIANCE FILTER
-# ==================================================
 
 selector = VarianceThreshold(
     threshold=0.001
@@ -190,9 +179,8 @@ feature_df.to_csv(
     index=False
 )
 
-# ==================================================
 # TOP FEATURE DATASET
-# ==================================================
+
 
 X_train_selected = X_train_var[:, top_indices]
 X_test_selected = X_test_var[:, top_indices]
@@ -262,9 +250,8 @@ print(
     f"\nXGBoost PR-AUC: {xgb_pr_auc:.4f}"
 )
 
-# ==================================================
+
 # LOGISTIC REGRESSION BASELINE
-# ==================================================
 
 print("\nTraining Logistic Regression...")
 
@@ -302,9 +289,7 @@ print(
     )
 )
 
-# ==================================================
 # SAVE MODEL
-# ==================================================
 
 joblib.dump(
     xgb_model,
