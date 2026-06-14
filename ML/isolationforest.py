@@ -8,25 +8,18 @@ from sklearn.metrics import (
     classification_report,
     confusion_matrix
 )
-
-# =====================================
 # CONFIG
-# =====================================
 
 DATA_PATH = "../dataset/midas_cleaned.csv"
 RANDOM_STATE = 42
 
-# =====================================
 # LOAD DATA
-# =====================================
 
 print("Loading dataset...")
 
 df = pd.read_csv(DATA_PATH)
 
-# =====================================
 # REMOVE LEAKAGE
-# =====================================
 
 drop_cols = [
     "F3912",
@@ -49,9 +42,7 @@ df.drop(
     errors="ignore"
 )
 
-# =====================================
 # SPLIT
-# =====================================
 
 X = df.drop("F3924", axis=1)
 y = df["F3924"]
@@ -67,9 +58,7 @@ X_train, X_test, y_train, y_test = train_test_split(
 print("Train Shape:", X_train.shape)
 print("Test Shape :", X_test.shape)
 
-# =====================================
 # VARIANCE THRESHOLD
-# =====================================
 
 selector = VarianceThreshold(
     threshold=0.001
@@ -83,9 +72,7 @@ print(
     X_train_var.shape
 )
 
-# =====================================
 # TRAIN ONLY ON NORMAL ACCOUNTS
-# =====================================
 
 X_train_normal = X_train_var[
     y_train == 0
@@ -96,9 +83,7 @@ print(
     X_train_normal.shape
 )
 
-# =====================================
 # ISOLATION FOREST
-# =====================================
 
 iso = IsolationForest(
     n_estimators=300,
@@ -113,9 +98,7 @@ iso.fit(
     X_train_normal
 )
 
-# =====================================
 # PREDICT
-# =====================================
 
 pred = iso.predict(
     X_test_var
@@ -131,9 +114,7 @@ pred = np.where(
     0
 )
 
-# =====================================
 # RESULTS
-# =====================================
 
 print("\n===== ISOLATION FOREST =====\n")
 
