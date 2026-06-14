@@ -8,31 +8,20 @@ from sklearn.feature_selection import VarianceThreshold
 
 print("Loading model...")
 
-# =====================================
-
 # Load Model
 
-# =====================================
 
 model = joblib.load(
 "midas_xgboost.pkl"
 )
 
-# =====================================
-
 # Load Dataset
-
-# =====================================
 
 df = pd.read_csv(
 "../dataset/midas_cleaned.csv"
 )
 
-# =====================================
-
 # Remove Leakage Columns
-
-# =====================================
 
 drop_cols = [
 "F3912",
@@ -52,11 +41,7 @@ if c in df.columns
 
 X = df.drop(columns=existing)
 
-# =====================================
-
 # Same Variance Threshold
-
-# =====================================
 
 selector = VarianceThreshold(
 threshold=0.001
@@ -68,11 +53,7 @@ selected_feature_names = X.columns[
 selector.get_support()
 ]
 
-# =====================================
-
 # Load Top Features
-
-# =====================================
 
 top_indices = np.load(
 "top_feature_indices.npy"
@@ -84,11 +65,7 @@ selected_feature_names[top_indices]
 
 X_selected = X_var[:, top_indices]
 
-# =====================================
-
 # Small Sample
-
-# =====================================
 
 sample_size = min(100, len(X_selected))
 
@@ -105,11 +82,7 @@ columns=top_feature_names
 
 print("Sample Shape:", X_sample.shape)
 
-# =====================================
-
 # SHAP
-
-# =====================================
 
 print("Running SHAP...")
 
@@ -121,11 +94,7 @@ shap_values = explainer.shap_values(
 X_sample
 )
 
-# =====================================
-
 # Summary Plot
-
-# =====================================
 
 plt.figure(figsize=(12, 8))
 
